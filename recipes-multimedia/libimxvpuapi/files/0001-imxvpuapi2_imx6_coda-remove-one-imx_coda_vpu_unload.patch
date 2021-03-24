@@ -1,0 +1,32 @@
+From bc5f853ea746b8068e8ab16cf1c2c0034ab5ce40 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?K=C3=A9vin=20L=27h=C3=B4pital?=
+ <kevin.lhopital@savoirfairelinux.com>
+Date: Fri, 26 Feb 2021 12:45:44 +0100
+Subject: [PATCH] imxvpuapi2_imx6_coda: remove one imx_coda_vpu_unload
+
+There are two imx_coda_vpu_unload in the imx_vpu_api_dec_close function.
+This is not corresponding to the number of loads in
+imx_vpu_api_dec_open function. It causes crashes after multiple open and
+close.
+
+The issue is reported here :
+https://github.com/Freescale/libimxvpuapi/issues/40
+---
+ imxvpuapi2/imxvpuapi2_imx6_coda.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/imxvpuapi2/imxvpuapi2_imx6_coda.c b/imxvpuapi2/imxvpuapi2_imx6_coda.c
+index ca34bd4..80d8cf0 100644
+--- a/imxvpuapi2/imxvpuapi2_imx6_coda.c
++++ b/imxvpuapi2/imxvpuapi2_imx6_coda.c
+@@ -1672,7 +1672,6 @@ void imx_vpu_api_dec_close(ImxVpuApiDecoder *decoder)
+ 	if (dec_ret != RETCODE_SUCCESS)
+ 		IMX_VPU_API_ERROR("could not close decoder: %s", retcode_to_string(dec_ret));
+
+-	imx_coda_vpu_unload();
+
+
+ 	/* Close the IPU VDOA FD. */
+--
+2.17.1
+
