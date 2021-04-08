@@ -1,0 +1,15 @@
+[Unit]
+Description=Qt client for Jami
+Wants=jami-dbus.service jami-daemon.service
+After=jami-dbus.service jami-deamon.service
+
+[Service]
+Type=simple
+Environment=DBUS_SESSION_BUS_ADDRESS=unix:abstract=/run/jami_dbus
+Environment=QT_QPA_PLATFORM=eglfs
+Environment=QT_QPA_EGLFS_INTEGRATION=eglfs_viv
+ExecStart=/usr/bin/jami-qt -d
+User=jami
+
+[Install]
+WantedBy=multi-user.target
