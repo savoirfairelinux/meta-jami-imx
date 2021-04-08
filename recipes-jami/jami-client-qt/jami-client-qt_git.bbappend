@@ -2,6 +2,7 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 
 SRC_URI += " \
 	file://jami-client.service \
+	file://0001-disable-libx11-dependency.patch \
 	"
 
 inherit useradd
