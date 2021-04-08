@@ -9,6 +9,8 @@ SRC_URI += " \
 SRC_URI_append_use-nxp-bsp = " \
         file://0001-media-decoder_finder.h-use-h264_imxvpuapi-to-decode-.patch \
         file://0002-media-media_encoder.cpp-use-h264_imxvpuapi-to-encode.patch \
+        file://0003-media-media_encoder.cpp-fix-wrong-encoder-output-pix.patch \
+        file://0004-media-media_encoder.cpp-disable-wrong-pixels-format-.patch \
         "
 
 do_install_append() {

@@ -1,0 +1,27 @@
+From 9f9cd51b5a9bf533f58a5386ea5bb7bcf0a92acf Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Mathieu=20Dupr=C3=A9?= <mathieu.dupre@savoirfairelinux.com>
+Date: Fri, 12 Feb 2021 12:08:23 +0100
+Subject: [PATCH 3/4] media/media_encoder.cpp: fix wrong encoder output pixels
+ format
+
+The i.MX6 hardware encoder output format is YUV 4:2:2 not YUV 4:2:0.
+---
+ src/media/media_encoder.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/media/media_encoder.cpp b/src/media/media_encoder.cpp
+index 03af6eec9..c5371b1ac 100644
+--- a/src/media/media_encoder.cpp
++++ b/src/media/media_encoder.cpp
+@@ -555,7 +555,7 @@ MediaEncoder::prepareEncoderContext(AVCodec* outputCodec, bool is_video)
+ 
+         // emit one intra frame every gop_size frames
+         encoderCtx->max_b_frames = 0;
+-        encoderCtx->pix_fmt = AV_PIX_FMT_YUV420P;
++        encoderCtx->pix_fmt = AV_PIX_FMT_YUV422P;
+         // Keep YUV format for macOS
+ #ifdef RING_ACCEL
+ #if defined(TARGET_OS_IOS) && TARGET_OS_IOS
+-- 
+2.29.2
+
