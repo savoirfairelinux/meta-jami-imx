@@ -1,0 +1,14 @@
+[Unit]
+Description=Jami daemon
+Wants=jami-dbus.service
+After=jami-dbus.service
+
+[Service]
+Type=simple
+EnvironmentFile=-/etc/default/dring
+Environment=DBUS_SESSION_BUS_ADDRESS=unix:abstract=/run/jami_dbus
+ExecStart=/usr/lib/ring/dring -c -d -p $OPTIONS
+User=jami
+
+[Install]
+WantedBy=multi-user.target
