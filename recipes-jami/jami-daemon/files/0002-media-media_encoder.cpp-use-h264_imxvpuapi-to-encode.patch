@@ -1,0 +1,32 @@
+From 009897475dd57b6c6ca0584a41041fad77af91f1 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Mathieu=20Dupr=C3=A9?= <mathieu.dupre@savoirfairelinux.com>
+Date: Fri, 12 Feb 2021 12:08:53 +0100
+Subject: [PATCH 2/4] media/media_encoder.cpp: use h264_imxvpuapi to encode
+ h.264
+
+Always use the ffmpeg hardware encoder h264_imxvpuapi when encoding
+h.264 video.
+---
+ src/media/media_encoder.cpp | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/src/media/media_encoder.cpp b/src/media/media_encoder.cpp
+index c5371b1ac..d8c286d37 100644
+--- a/src/media/media_encoder.cpp
++++ b/src/media/media_encoder.cpp
+@@ -719,7 +719,11 @@ MediaEncoder::initCodec(AVMediaType mediaType, AVCodecID avcodecId, uint64_t br)
+     outputCodec_ = nullptr;
+ #ifdef RING_ACCEL
+     if (mediaType == AVMEDIA_TYPE_VIDEO) {
+-        if (enableAccel_) {
++        if (avcodecId == AV_CODEC_ID_H264)
++        {
++            outputCodec_ = avcodec_find_encoder_by_name("h264_imxvpuapi");
++            JAMI_WARN() << "Use h264_imxvpuapi";
++        } else if (enableAccel_) {
+             if (accel_) {
+                 outputCodec_ = avcodec_find_encoder_by_name(accel_->getCodecName().c_str());
+             }
+-- 
+2.29.2
+

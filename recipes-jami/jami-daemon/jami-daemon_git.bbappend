@@ -6,6 +6,11 @@ SRC_URI += " \
         file://dring \
         "
 
+SRC_URI_append_use-nxp-bsp = " \
+        file://0001-media-decoder_finder.h-use-h264_imxvpuapi-to-decode-.patch \
+        file://0002-media-media_encoder.cpp-use-h264_imxvpuapi-to-encode.patch \
+        "
+
 do_install_append() {
         install -d ${D}${systemd_unitdir}/system
         install -m 644 ${WORKDIR}/jami-dbus.service ${D}/${systemd_unitdir}/system/
