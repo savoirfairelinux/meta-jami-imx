@@ -1,0 +1,3 @@
+KERNEL=="mxc_hdmi", OWNER="root", GROUP="video"
+KERNEL=="mxc_ipu", OWNER="root", GROUP="video"
+KERNEL=="mxc_vpu", OWNER="root", GROUP="video"
