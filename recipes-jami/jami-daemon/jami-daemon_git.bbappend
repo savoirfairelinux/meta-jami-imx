@@ -12,6 +12,7 @@ SRC_URI_append_use-nxp-bsp = " \
         file://0003-media-media_encoder.cpp-fix-wrong-encoder-output-pix.patch \
         file://0004-media-media_encoder.cpp-disable-wrong-pixels-format-.patch \
         file://mxc.rules \
+	file://galcore.rules \
         "
 
 do_install_append() {
@@ -25,6 +26,7 @@ do_install_append() {
 do_install_append_use-nxp-bsp() {
         install -d ${D}${sysconfdir}/udev/rules.d
         install -m 0644 ${WORKDIR}/mxc.rules ${D}${sysconfdir}/udev/rules.d/
+	install -m 0644 ${WORKDIR}/galcore.rules ${D}${sysconfdir}/udev/rules.d/
 }
 
 FILES_${PN} += " \
@@ -35,6 +37,7 @@ FILES_${PN} += " \
 
 FILES_${PN}_append_use-nxp-bsp = " \
         ${sysconfdir}/udev/rules.d/mxc.rules \
+	${sysconfdir}/udev/rules.d/galcore.rules \
         "
 
 SYSTEMD_SERVICE_${PN} = " \
