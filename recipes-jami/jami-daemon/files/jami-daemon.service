@@ -7,7 +7,7 @@ After=jami-dbus.service
 Type=simple
 EnvironmentFile=-/etc/default/dring
 Environment=DBUS_SESSION_BUS_ADDRESS=unix:abstract=/run/jami_dbus
-ExecStart=/usr/lib/ring/dring -c -d -p $OPTIONS
+ExecStart=/usr/libexec/jamid -c -d -p $OPTIONS
 User=jami
 
 [Install]
