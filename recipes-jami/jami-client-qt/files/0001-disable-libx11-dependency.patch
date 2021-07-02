@@ -1,7 +1,7 @@
-From 430368b26f06312d4ba306e25e24702df77f2366 Mon Sep 17 00:00:00 2001
+From b690932a8043c979c8a3b22b37bef4c0502af07a Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?K=C3=A9vin=20L=27h=C3=B4pital?=
  <kevin.lhopital@savoirfairelinux.com>
-Date: Thu, 18 Mar 2021 16:30:20 +0100
+Date: Fri, 2 Jul 2021 10:13:58 +0200
 Subject: [PATCH] disable libx11 dependency
 
 This dependency is irrelevant on i.MX6 platforms because we don't use X11.
@@ -9,50 +9,49 @@ Moreover compiling with libX11 requires to enable the disto feature X11
 which will change the compilation of Qt5 and disable the EGLFS_VIV
 plugin.
 ---
- CMakeLists.txt    |  4 ----
- src/avadapter.cpp | 21 ---------------------
- 2 files changed, 25 deletions(-)
+ CMakeLists.txt |  6 +-----
+ avadapter.cpp  | 21 ---------------------
+ 2 files changed, 1 insertion(+), 26 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index d4b0764..4fd512d 100644
+index c045f0c..cf037e4 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -67,7 +67,6 @@ set(COMMON_SOURCES
-     ${SRC_DIR}/qmlregister.cpp
-     ${SRC_DIR}/utilsadapter.cpp
-     ${SRC_DIR}/dbuserrorhandler.cpp
--    ${SRC_DIR}/xrectsel.c
-     ${SRC_DIR}/moderatorlistmodel.cpp
-     ${SRC_DIR}/screensaver.cpp)
+@@ -211,11 +211,9 @@ if(MSVC)
+                         ${QRENCODE})
+ else()
+     list(APPEND COMMON_SOURCES
+-                ${SRC_DIR}/xrectsel.c
+                 ${SRC_DIR}/dbuserrorhandler.cpp)
+     list(APPEND COMMON_HEADERS
+-                ${SRC_DIR}/dbuserrorhandler.h
+-                ${SRC_DIR}/xrectsel.h)
++                ${SRC_DIR}/dbuserrorhandler.h)
+     list(APPEND QML_LIBS Qt5::DBus)
+     list(APPEND QML_LIBS_LIST DBus)
  
-@@ -120,7 +119,6 @@ set(COMMON_HEADERS
-     ${SRC_DIR}/qtutils.h
-     ${SRC_DIR}/utilsadapter.h
-     ${SRC_DIR}/dbuserrorhandler.h
--    ${SRC_DIR}/xrectsel.h
-     ${SRC_DIR}/moderatorlistmodel.h
-     ${SRC_DIR}/screensaver.h)
+@@ -279,7 +277,6 @@ else()
  
-@@ -213,13 +211,11 @@ set(JAMI_DATA_PREFIX "${CMAKE_INSTALL_PREFIX}/share")
+     find_library(ringclient ringclient ${LRCLIBDIR} NO_DEFAULT_PATH)
+     find_library(qrencode qrencode)
+-    find_library(X11 X11)
+ endif()
  
- find_library(ringclient ringclient ${LRCLIBDIR} NO_DEFAULT_PATH)
- find_library(qrencode qrencode)
--find_library(X11 X11)
- 
- target_link_libraries(jami-qt
-     ${QML_LIBS}
-     ${LRC_LIB_NAME}
-     ${qrencode}
--    ${X11}
-     ${LIBNM_LIBRARIES})
- 
- if(ENABLE_TESTS)
+ # Qt find package
+@@ -395,7 +392,6 @@ else()
+                           ${QML_LIBS}
+                           ${LRC_LIB_NAME}
+                           ${qrencode}
+-                          ${X11}
+                           ${LIBNM_LIBRARIES}
+                           ${LIBNOTIFY_LIBRARIES}
+                           ${LIBGDKPIXBUF_LIBRARIES})
 diff --git a/src/avadapter.cpp b/src/avadapter.cpp
-index fe0dcea..fb3ec45 100644
+index acb8644..b879173 100644
 --- a/src/avadapter.cpp
 +++ b/src/avadapter.cpp
-@@ -23,10 +23,6 @@
- #include "lrcinstance.h"
+@@ -21,10 +21,6 @@
+ #include "avadapter.h"
  #include "qtutils.h"
  
 -#ifdef Q_OS_LINUX
@@ -62,7 +61,7 @@ index fe0dcea..fb3ec45 100644
  #include <QtConcurrent/QtConcurrent>
  #include <QApplication>
  #include <QPainter>
-@@ -173,29 +173,12 @@ AvAdapter::shareFile(const QString& filePath)
+@@ -190,29 +186,12 @@ AvAdapter::shareFile(const QString& filePath)
  void
  AvAdapter::shareScreenArea(unsigned x, unsigned y, unsigned width, unsigned height)
  {
