@@ -3,7 +3,7 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 SRC_URI += " \
         file://jami-dbus.service \
         file://jami-daemon.service \
-        file://dring \
+        file://jamid \
         "
 
 SRC_URI_append_use-nxp-bsp = " \
@@ -20,7 +20,7 @@ do_install_append() {
         install -m 644 ${WORKDIR}/jami-dbus.service ${D}/${systemd_unitdir}/system/
         install -m 644 ${WORKDIR}/jami-daemon.service ${D}/${systemd_unitdir}/system/
         install -d ${D}${sysconfdir}/default
-        install -m 0644 ${WORKDIR}/dring ${D}${sysconfdir}/default/
+        install -m 0644 ${WORKDIR}/jamid ${D}${sysconfdir}/default/
 }
 
 do_install_append_use-nxp-bsp() {
@@ -32,7 +32,7 @@ do_install_append_use-nxp-bsp() {
 FILES_${PN} += " \
         ${systemd_unitdir}/system/jami-dbus.service \
         ${systemd_unitdir}/system/jami-daemon.service \
-        ${sysconfdir}/default/dring \
+        ${sysconfdir}/default/jamid \
         "
 
 FILES_${PN}_append_use-nxp-bsp = " \

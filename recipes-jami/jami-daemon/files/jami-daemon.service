@@ -5,7 +5,7 @@ After=jami-dbus.service
 
 [Service]
 Type=simple
-EnvironmentFile=-/etc/default/dring
+EnvironmentFile=-/etc/default/jamid
 Environment=DBUS_SESSION_BUS_ADDRESS=unix:abstract=/run/jami_dbus
 ExecStart=/usr/libexec/jamid -c -d -p $OPTIONS
 User=jami
