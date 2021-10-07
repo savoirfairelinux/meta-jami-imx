@@ -1,23 +1,23 @@
-From b690932a8043c979c8a3b22b37bef4c0502af07a Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?K=C3=A9vin=20L=27h=C3=B4pital?=
- <kevin.lhopital@savoirfairelinux.com>
-Date: Fri, 2 Jul 2021 10:13:58 +0200
+From 0bb4b8b57fb98b40d216351ffe26f2d8fd699642 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Albert=20Bab=C3=AD?= <albert.babi@savoirfairelinux.com>
+Date: Fri, 8 Oct 2021 09:59:17 +0200
 Subject: [PATCH] disable libx11 dependency
 
 This dependency is irrelevant on i.MX6 platforms because we don't use X11.
 Moreover compiling with libX11 requires to enable the disto feature X11
 which will change the compilation of Qt5 and disable the EGLFS_VIV
 plugin.
+
 ---
- CMakeLists.txt |  6 +-----
- avadapter.cpp  | 21 ---------------------
+ CMakeLists.txt    |  6 +-----
+ src/avadapter.cpp | 21 ---------------------
  2 files changed, 1 insertion(+), 26 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index c045f0c..cf037e4 100644
+index 7f22cf5..3a97ca3 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -211,11 +211,9 @@ if(MSVC)
+@@ -228,11 +228,9 @@ if(MSVC)
                          ${QRENCODE})
  else()
      list(APPEND COMMON_SOURCES
@@ -30,7 +30,7 @@ index c045f0c..cf037e4 100644
      list(APPEND QML_LIBS Qt5::DBus)
      list(APPEND QML_LIBS_LIST DBus)
  
-@@ -279,7 +277,6 @@ else()
+@@ -307,7 +305,6 @@ else()
  
      find_library(ringclient ringclient ${LRCLIBDIR} NO_DEFAULT_PATH)
      find_library(qrencode qrencode)
@@ -38,21 +38,21 @@ index c045f0c..cf037e4 100644
  endif()
  
  # Qt find package
-@@ -395,7 +392,6 @@ else()
+@@ -423,7 +420,6 @@ else()
                            ${QML_LIBS}
                            ${LRC_LIB_NAME}
                            ${qrencode}
 -                          ${X11}
                            ${LIBNM_LIBRARIES}
                            ${LIBNOTIFY_LIBRARIES}
-                           ${LIBGDKPIXBUF_LIBRARIES})
+                           ${LIBGDKPIXBUF_LIBRARIES}
 diff --git a/src/avadapter.cpp b/src/avadapter.cpp
-index acb8644..b879173 100644
+index ef3f8b0..d580add 100644
 --- a/src/avadapter.cpp
 +++ b/src/avadapter.cpp
-@@ -21,10 +21,6 @@
- #include "avadapter.h"
- #include "qtutils.h"
+@@ -24,10 +24,6 @@
+ #include "api/newcodecmodel.h"
+ #include "api/newdevicemodel.h"
  
 -#ifdef Q_OS_LINUX
 -#include "xrectsel.h"
@@ -61,7 +61,7 @@ index acb8644..b879173 100644
  #include <QtConcurrent/QtConcurrent>
  #include <QApplication>
  #include <QPainter>
-@@ -190,29 +186,12 @@ AvAdapter::shareFile(const QString& filePath)
+@@ -175,29 +171,12 @@ AvAdapter::shareFile(const QString& filePath)
  void
  AvAdapter::shareScreenArea(unsigned x, unsigned y, unsigned width, unsigned height)
  {
@@ -78,7 +78,7 @@ index acb8644..b879173 100644
 -                                           y,
 -                                           width < 128 ? 128 : width,
 -                                           height < 128 ? 128 : height,
--                                           getCurrentCallId());
+-                                           lrcInstance_->getCurrentCallId());
 -    });
 -#else
      lrcInstance_->avModel().setDisplay(getScreenNumber(),
@@ -86,11 +86,11 @@ index acb8644..b879173 100644
                                         y,
                                         width < 128 ? 128 : width,
                                         height < 128 ? 128 : height,
-                                        getCurrentCallId());
+                                        lrcInstance_->getCurrentCallId());
 -#endif
  }
  
  void
 -- 
-2.17.1
+2.25.1
 
