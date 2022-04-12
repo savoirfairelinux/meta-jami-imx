@@ -8,6 +8,7 @@ Type=simple
 Environment=DBUS_SESSION_BUS_ADDRESS=unix:abstract=/run/jami_dbus
 Environment=QT_QPA_PLATFORM=eglfs
 Environment=QT_QPA_EGLFS_INTEGRATION=eglfs_viv
+Environment=QT_QPA_EGLFS_NO_LIBINPUT=1
 ExecStart=/usr/bin/jami-qt -d
 User=jami
 
