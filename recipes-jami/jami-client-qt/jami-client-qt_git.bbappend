@@ -1,14 +1,14 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
 SRC_URI += " \
-	file://jami-client.service \
-	file://0001-disable-libx11-dependency.patch \
-	"
+        file://jami-client.service \
+        file://0001-disable-libx11-dependency.patch \
+        "
 
 inherit useradd
 
 USERADD_PACKAGES= "${PN}"
-USERADD_PARAM_${PN} = " \
+USERADD_PARAM:${PN} = " \
         --groups input,video,audio \
         --user-group \
         --create-home \
@@ -16,7 +16,7 @@ USERADD_PARAM_${PN} = " \
         jami \
         "
 
-do_install_append() {
+do_install:append() {
         #remove gnome client
         rm ${D}/usr/bin/jami
 
@@ -25,6 +25,8 @@ do_install_append() {
                 ${D}/${systemd_unitdir}/system/
 }
 
-FILES_${PN}_append += " ${systemd_unitdir}/system/jami-client.service"
+RDEPENDS:${PN} += "kernel-module-imx-gpu-viv"
 
-SYSTEMD_SERVICE_${PN} = "jami-client.service"
+FILES:${PN}:append = " ${systemd_unitdir}/system/jami-client.service"
+
+SYSTEMD_SERVICE:${PN} = "jami-client.service"

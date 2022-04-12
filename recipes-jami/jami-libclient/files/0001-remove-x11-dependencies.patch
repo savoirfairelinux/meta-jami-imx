@@ -1,0 +1,67 @@
+From dc46739fb5056612204181a66b8a10fd4da0bf21 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?K=C3=A9vin=20L=27h=C3=B4pital?=
+ <kevin.lhopital@savoirfairelinux.com>
+Date: Fri, 8 Apr 2022 15:31:33 +0200
+Subject: [PATCH] remove x11 dependencies
+
+---
+ src/avmodel.cpp | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/src/avmodel.cpp b/src/avmodel.cpp
+index 3c70d6e2..c6c96825 100644
+--- a/src/avmodel.cpp
++++ b/src/avmodel.cpp
+@@ -50,9 +50,9 @@
+ #include <string>
+ #include <sstream>
+ 
+-#if defined(Q_OS_UNIX) && !defined(__APPLE__)
+-#include <xcb/xcb.h>
+-#endif
++//#if defined(Q_OS_UNIX) && !defined(__APPLE__)
++//#include <xcb/xcb.h>
++//#endif
+ 
+ namespace lrc {
+ 
+@@ -526,7 +526,7 @@ AVModel::stopPreview(const QString& resource)
+     VideoManager::instance().closeVideoInput(resource);
+ }
+ 
+-#if defined(Q_OS_UNIX) && !defined(__APPLE__)
++/*#if defined(Q_OS_UNIX) && !defined(__APPLE__)
+ static xcb_atom_t
+ getAtom(xcb_connection_t* c, const std::string& atomName)
+ {
+@@ -539,13 +539,13 @@ getAtom(xcb_connection_t* c, const std::string& atomName)
+     return {};
+ }
+ #endif
+-
++*/
+ const QVariantMap
+ AVModel::getListWindows() const
+ {
+     QMap<QString, QVariant> ret {};
+ 
+-#if defined(Q_OS_UNIX) && !defined(__APPLE__)
++/*#if defined(Q_OS_UNIX) && !defined(__APPLE__)
+     std::unique_ptr<xcb_connection_t, void (*)(xcb_connection_t*)> c(xcb_connect(nullptr, nullptr),
+                                                                      [](xcb_connection_t* ptr) {
+                                                                          xcb_disconnect(ptr);
+@@ -616,9 +616,9 @@ AVModel::getListWindows() const
+         }
+     }
+     return ret;
+-#else
++#else*/
+     return ret;
+-#endif
++//#endif
+ }
+ 
+ void
+-- 
+2.25.1
+

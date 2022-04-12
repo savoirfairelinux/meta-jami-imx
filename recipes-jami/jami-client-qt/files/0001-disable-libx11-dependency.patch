@@ -1,45 +1,48 @@
-From 0bb4b8b57fb98b40d216351ffe26f2d8fd699642 Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?Albert=20Bab=C3=AD?= <albert.babi@savoirfairelinux.com>
-Date: Fri, 8 Oct 2021 09:59:17 +0200
+From d8d0cee6cffede9cf853c6835ae16e91e25dbecf Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?K=C3=A9vin=20L=27h=C3=B4pital?=
+ <kevin.lhopital@savoirfairelinux.com>
+Date: Thu, 31 Mar 2022 13:01:42 +0200
 Subject: [PATCH] disable libx11 dependency
 
-This dependency is irrelevant on i.MX6 platforms because we don't use X11.
+This dependency is irrelevant on i.MX6 platforms because we don't use
+X11.
 Moreover compiling with libX11 requires to enable the disto feature X11
 which will change the compilation of Qt5 and disable the EGLFS_VIV
 plugin.
-
 ---
  CMakeLists.txt    |  6 +-----
- src/avadapter.cpp | 21 ---------------------
- 2 files changed, 1 insertion(+), 26 deletions(-)
+ src/avadapter.cpp | 26 --------------------------
+ 2 files changed, 1 insertion(+), 31 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 7f22cf5..3a97ca3 100644
+index aec39c0..10f2498 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -228,11 +228,9 @@ if(MSVC)
-                         ${QRENCODE})
- else()
+@@ -279,13 +279,11 @@ if(MSVC)
+     )
+ elseif (NOT APPLE)
      list(APPEND COMMON_SOURCES
 -                ${SRC_DIR}/xrectsel.c
-                 ${SRC_DIR}/dbuserrorhandler.cpp)
+                 ${SRC_DIR}/dbuserrorhandler.cpp
+                 ${SRC_DIR}/connectivitymonitor.cpp
+                 ${SRC_DIR}/updatemanager.cpp)
      list(APPEND COMMON_HEADERS
 -                ${SRC_DIR}/dbuserrorhandler.h
 -                ${SRC_DIR}/xrectsel.h)
 +                ${SRC_DIR}/dbuserrorhandler.h)
-     list(APPEND QML_LIBS Qt5::DBus)
-     list(APPEND QML_LIBS_LIST DBus)
+     list(APPEND QT_LIBS Qt::DBus)
+     list(APPEND QT_MODULES DBus)
  
-@@ -307,7 +305,6 @@ else()
+@@ -360,7 +358,6 @@ elseif (NOT APPLE)
  
      find_library(ringclient ringclient ${LRCLIBDIR} NO_DEFAULT_PATH)
      find_library(qrencode qrencode)
 -    find_library(X11 X11)
- endif()
- 
- # Qt find package
-@@ -423,7 +420,6 @@ else()
-                           ${QML_LIBS}
+ else() # APPLE
+     list(APPEND COMMON_SOURCES
+                 ${SRC_DIR}/os/macos/updatemanager.mm
+@@ -528,7 +525,6 @@ elseif (NOT APPLE)
+                           ${QT_LIBS}
                            ${LRC_LIB_NAME}
                            ${qrencode}
 -                          ${X11}
@@ -47,7 +50,7 @@ index 7f22cf5..3a97ca3 100644
                            ${LIBNOTIFY_LIBRARIES}
                            ${LIBGDKPIXBUF_LIBRARIES}
 diff --git a/src/avadapter.cpp b/src/avadapter.cpp
-index ef3f8b0..d580add 100644
+index c46836e..ea8768b 100644
 --- a/src/avadapter.cpp
 +++ b/src/avadapter.cpp
 @@ -24,10 +24,6 @@
@@ -61,7 +64,7 @@ index ef3f8b0..d580add 100644
  #include <QtConcurrent/QtConcurrent>
  #include <QApplication>
  #include <QPainter>
-@@ -175,29 +171,12 @@ AvAdapter::shareFile(const QString& filePath)
+@@ -192,27 +188,6 @@ AvAdapter::shareFile(const QString& filePath)
  void
  AvAdapter::shareScreenArea(unsigned x, unsigned y, unsigned width, unsigned height)
  {
@@ -72,21 +75,27 @@ index ef3f8b0..d580add 100644
 -    QTimer::singleShot(100, [=]() mutable {
 -        x = y = width = height = 0;
 -        xrectsel(&x, &y, &width, &height);
--
--        lrcInstance_->avModel().setDisplay(getScreenNumber(),
--                                           x,
--                                           y,
--                                           width < 128 ? 128 : width,
--                                           height < 128 ? 128 : height,
--                                           lrcInstance_->getCurrentCallId());
+-        auto resource = lrcInstance_->getCurrentCallModel()->getDisplay(getScreenNumber(),
+-                                                                        x,
+-                                                                        y,
+-                                                                        width < 128 ? 128 : width,
+-                                                                        height < 128 ? 128 : height);
+-        auto callId = lrcInstance_->getCurrentCallId();
+-        lrcInstance_->getCurrentCallModel()
+-            ->requestMediaChange(callId,
+-                                 "video_0",
+-                                 resource,
+-                                 lrc::api::NewCallModel::MediaRequestType::SCREENSHARING,
+-                                 false);
 -    });
 -#else
-     lrcInstance_->avModel().setDisplay(getScreenNumber(),
-                                        x,
-                                        y,
-                                        width < 128 ? 128 : width,
-                                        height < 128 ? 128 : height,
-                                        lrcInstance_->getCurrentCallId());
+     auto resource = lrcInstance_->getCurrentCallModel()->getDisplay(getScreenNumber(),
+                                                                     x,
+                                                                     y,
+@@ -225,7 +200,6 @@ AvAdapter::shareScreenArea(unsigned x, unsigned y, unsigned width, unsigned heig
+                              resource,
+                              lrc::api::NewCallModel::MediaRequestType::SCREENSHARING,
+                              false);
 -#endif
  }
  

@@ -1,20 +1,20 @@
-From f3a0de6a1e1aed71d087c0ce9db494522a99dca3 Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?Mathieu=20Dupr=C3=A9?= <mathieu.dupre@savoirfairelinux.com>
-Date: Fri, 12 Feb 2021 12:07:20 +0100
-Subject: [PATCH 1/4] media/decoder_finder.h: use h264_imxvpuapi to decode
- h.264
+From 007d23e345fb8c8f5952216aa1f44c96b8808398 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?K=C3=A9vin=20L=27h=C3=B4pital?=
+ <kevin.lhopital@savoirfairelinux.com>
+Date: Thu, 31 Mar 2022 13:12:00 +0200
+Subject: [PATCH 1/4] media/decoder_finder.h: use h264_imxvpuapi to decode h.264
 
 Always use the ffmpeg hardware decoder h264_imxvpuapi when decoding
 h.264.
 ---
- src/media/decoder_finder.h | 4 ++++
- 1 file changed, 4 insertions(+)
+ src/media/decoder_finder.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/src/media/decoder_finder.h b/src/media/decoder_finder.h
-index fed53b720..ca83af04d 100644
+index 55b3b4d..ac26e33 100644
 --- a/src/media/decoder_finder.h
 +++ b/src/media/decoder_finder.h
-@@ -46,12 +46,16 @@ findDecoder(const enum AVCodecID codec_id)
+@@ -46,6 +46,8 @@ findDecoder(const enum AVCodecID codec_id)
      case AV_CODEC_ID_VP9:
          codec_name = "vp9_mediacodec"; break;
  #endif
@@ -23,14 +23,6 @@ index fed53b720..ca83af04d 100644
      default:
          codec_name = nullptr;
      }
-     AVCodec* codec = nullptr;
-     if (codec_name)
-+    {
-         codec = avcodec_find_decoder_by_name(codec_name);
-+    }
-     if (not codec)
-         codec = avcodec_find_decoder(codec_id);
-     return codec;
 -- 
-2.29.2
+2.25.1
 

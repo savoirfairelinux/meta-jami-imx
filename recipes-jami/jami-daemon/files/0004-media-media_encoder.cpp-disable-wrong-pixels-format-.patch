@@ -1,29 +1,29 @@
-From e1ee13db8bf3eb9911aa77ad998ee8cf3499c894 Mon Sep 17 00:00:00 2001
+From 09492f2f69b2504c6e878996c7c8c08fee038b2e Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?K=C3=A9vin=20L=27h=C3=B4pital?=
  <kevin.lhopital@savoirfairelinux.com>
-Date: Tue, 2 Mar 2021 09:51:59 +0100
+Date: Thu, 31 Mar 2022 13:18:01 +0200
 Subject: [PATCH 4/4] media/media_encoder.cpp: disable wrong pixels format
- convertion
+ conversion
 
-Check if the camera output pixel format is supported by the IMX6 encoder.
+Check if the camera output pixel format is supported by the IMX6
+encoder.
 If not, a conversion is done.
 This can be the case with some usb cameras, which provide for low
 resolutions raw data in an incompatible pixel format with the imx
 encoder.
-
 ---
  src/media/media_encoder.cpp | 19 +++++--------------
  1 file changed, 5 insertions(+), 14 deletions(-)
 
 diff --git a/src/media/media_encoder.cpp b/src/media/media_encoder.cpp
-index 6f8335861..e28efbfc1 100644
+index 94ade84..6e00914 100644
 --- a/src/media/media_encoder.cpp
 +++ b/src/media/media_encoder.cpp
-@@ -1210,22 +1210,13 @@ MediaEncoder::getHWFrame(const std::shared_ptr<VideoFrame>& input, std::shared_p
+@@ -1281,22 +1281,13 @@ MediaEncoder::getHWFrame(const std::shared_ptr<VideoFrame>& input,
          }
  #elif !defined(__APPLE__)
- // Other Platforms
-+	AVCodecContext* encoderCtx = encoders_[currentStreamIdx_];
+         // Other Platforms
++        AVCodecContext* encoderCtx = encoders_[currentStreamIdx_];
          auto desc = av_pix_fmt_desc_get(static_cast<AVPixelFormat>(input->format()));
          bool isHardware = desc && (desc->flags & AV_PIX_FMT_FLAG_HWACCEL);
 -        if (accel_ && accel_->isLinked() && isHardware) {
@@ -40,13 +40,13 @@ index 6f8335861..e28efbfc1 100644
 -        } else {
 -            output = getScaledSWFrame(*input.get());
 -        }
-+	if (input->format() != encoderCtx->pix_fmt){
-+		output = scaler_.convertFormat(*input.get(), encoderCtx->pix_fmt);
-+	}else
-+		output = input;
++        if (input->format() != encoderCtx->pix_fmt)
++                output = scaler_.convertFormat(*input.get(), encoderCtx->pix_fmt);
++        else
++                output = input;
  #else
- // macOS
+         // macOS
          output = getScaledSWFrame(*input.get());
 -- 
-2.17.1
+2.25.1
 
