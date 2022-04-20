@@ -11,6 +11,7 @@ SRC_URI:append:use-nxp-bsp = " \
         file://0002-media-media_encoder.cpp-use-h264_imxvpuapi-to-encode.patch \
         file://0003-media-media_encoder.cpp-fix-wrong-encoder-output-pix.patch \
         file://0004-media-media_encoder.cpp-disable-wrong-pixels-format-.patch \
+        file://0005-media-fill-decoderctx-after-send-packet.patch \
         file://mxc.rules \
 	file://galcore.rules \
         "

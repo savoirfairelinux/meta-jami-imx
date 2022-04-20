@@ -1,0 +1,34 @@
+From cfbf3dd82b32265689d82bccb7b7211a8ac659c0 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?K=C3=A9vin=20L=27h=C3=B4pital?=
+ <kevin.lhopital@savoirfairelinux.com>
+Date: Wed, 20 Apr 2022 12:28:55 +0200
+Subject: [PATCH] media: fill decoderctx after send packet
+
+avcodec_send_packet is for mjpeg format only, resetting to 0, the value
+of width, height and pixel format in decoder context. This prevent Jami
+from displaying the preview and the video in parameter.
+To avoid this issue, apply the saved value to the decoder context.
+
+---
+ src/media/media_decoder.cpp | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/src/media/media_decoder.cpp b/src/media/media_decoder.cpp
+index 1cac4b95e..2d81717e8 100644
+--- a/src/media/media_decoder.cpp
++++ b/src/media/media_decoder.cpp
+@@ -619,7 +619,11 @@ DecodeStatus
+ MediaDecoder::decode(AVPacket& packet)
+ {
+     int frameFinished = 0;
++    AVPixelFormat fmt = getPixelFormat();
+     auto ret = avcodec_send_packet(decoderCtx_, &packet);
++    decoderCtx_->width = width_;
++    decoderCtx_->height = height_;
++    decoderCtx_->pix_fmt = fmt;
+     if (ret < 0 && ret != AVERROR(EAGAIN)) {
+ #ifdef RING_ACCEL
+         if (accel_) {
+-- 
+2.35.1
+
