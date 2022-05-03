@@ -12,6 +12,8 @@ PACKAGECONFIG[mjpeg] = "--enable-decoder=mjpeg,--disable-decoder=mjpeg"
 
 PACKAGECONFIG[static] = "--enable-static --disable-shared"
 
+PACKAGECONFIG[neon] = ", --disable-neon"
+
 PACKAGECONFIG:append:pn-ffmpeg:use-nxp-bsp = " imxvpuapi"
 PACKAGECONFIG:remove:pn-ffmpeg:use-nxp-bsp = "mjpeg"
 
