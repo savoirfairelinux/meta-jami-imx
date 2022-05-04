@@ -1,9 +1,0 @@
-[Unit]
-Description=D-Bus Jami Session Message Bus Socket
-
-[Service]
-ExecStart=/usr/bin/dbus-daemon --session --address='unix:abstract=/run/jami_dbus' --nofork --nopidfile  --syslog-only
-User=jami
-
-[Install]
-WantedBy=multi-user.target

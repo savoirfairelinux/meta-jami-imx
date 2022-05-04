@@ -1,8 +1,6 @@
 FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
 SRC_URI += " \
-        file://jami-dbus.service \
-        file://jami-daemon.service \
         file://jamid \
         "
 
@@ -17,9 +15,6 @@ SRC_URI:append:use-nxp-bsp = " \
         "
 
 do_install:append() {
-        install -d ${D}${systemd_unitdir}/system
-        install -m 644 ${WORKDIR}/jami-dbus.service ${D}/${systemd_unitdir}/system/
-        install -m 644 ${WORKDIR}/jami-daemon.service ${D}/${systemd_unitdir}/system/
         install -d ${D}${sysconfdir}/default
         install -m 0644 ${WORKDIR}/jamid ${D}${sysconfdir}/default/
 }
@@ -31,17 +26,10 @@ do_install:append:use-nxp-bsp() {
 }
 
 FILES:${PN} += " \
-        ${systemd_unitdir}/system/jami-dbus.service \
-        ${systemd_unitdir}/system/jami-daemon.service \
         ${sysconfdir}/default/jamid \
         "
 
 FILES:${PN}:append:use-nxp-bsp = " \
         ${sysconfdir}/udev/rules.d/mxc.rules \
 	${sysconfdir}/udev/rules.d/galcore.rules \
-        "
-
-SYSTEMD_SERVICE:${PN} = " \
-        jami-dbus.service \
-        jami-daemon.service \
         "
